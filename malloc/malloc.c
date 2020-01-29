@@ -864,7 +864,7 @@ int      __posix_memalign(void **, size_t, size_t);
 #define M_TRIM_THRESHOLD       -1
 
 #ifndef DEFAULT_TRIM_THRESHOLD
-#define DEFAULT_TRIM_THRESHOLD (128 * 1024)
+#define DEFAULT_TRIM_THRESHOLD (-1)
 #endif
 
 /*
@@ -906,7 +906,7 @@ int      __posix_memalign(void **, size_t, size_t);
 */
 
 #ifndef DEFAULT_MMAP_THRESHOLD_MIN
-#define DEFAULT_MMAP_THRESHOLD_MIN (128 * 1024)
+#define DEFAULT_MMAP_THRESHOLD_MIN (32 * 1024 * 1024)
 #endif
 
 #ifndef DEFAULT_MMAP_THRESHOLD_MAX
@@ -917,7 +917,7 @@ int      __posix_memalign(void **, size_t, size_t);
 # if __WORDSIZE == 32
 #  define DEFAULT_MMAP_THRESHOLD_MAX (512 * 1024)
 # else
-#  define DEFAULT_MMAP_THRESHOLD_MAX (4 * 1024 * 1024 * sizeof(long))
+#  define DEFAULT_MMAP_THRESHOLD_MAX (16 * 1024 * 1024 * sizeof(long))
 # endif
 #endif
 
@@ -2887,8 +2887,10 @@ __libc_malloc(size_t bytes)
 
   __malloc_ptr_t (*hook) (size_t, const __malloc_ptr_t)
     = force_reg (__malloc_hook);
-  if (__builtin_expect (hook != NULL, 0))
+  if (__builtin_expect (hook != NULL, 0)){
+  	
     return (*hook)(bytes, RETURN_ADDRESS (0));
+  }
 
   arena_get(ar_ptr, bytes);
 
@@ -4768,9 +4770,12 @@ int __libc_mallopt(int param_number, int value)
 {
   mstate av = &main_arena;
   int res = 1;
-
-  if(__malloc_initialized < 0)
-    ptmalloc_init ();
+	
+  if(__malloc_initialized < 0){
+    //ptmalloc_init ();
+	__malloc_initialized = 1;
+  }
+  //arena_lookup(av);
   (void)mutex_lock(&av->mutex);
   /* Ensure initialization/consolidation */
   malloc_consolidate(av);
