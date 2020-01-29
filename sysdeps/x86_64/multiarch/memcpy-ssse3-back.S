@@ -1520,14 +1520,14 @@ L(gobble_mem_fwd_loop):
 	movdqu	0x60(%rsi), %xmm6
 	movdqu	0x70(%rsi), %xmm7
 	lfence
-	movntdq	%xmm0, (%rdi)
-	movntdq	%xmm1, 0x10(%rdi)
-	movntdq	%xmm2, 0x20(%rdi)
-	movntdq	%xmm3, 0x30(%rdi)
-	movntdq	%xmm4, 0x40(%rdi)
-	movntdq	%xmm5, 0x50(%rdi)
-	movntdq	%xmm6, 0x60(%rdi)
-	movntdq	%xmm7, 0x70(%rdi)
+	movdqa	%xmm0, (%rdi)
+	movdqa	%xmm1, 0x10(%rdi)
+	movdqa	%xmm2, 0x20(%rdi)
+	movdqa	%xmm3, 0x30(%rdi)
+	movdqa	%xmm4, 0x40(%rdi)
+	movdqa	%xmm5, 0x50(%rdi)
+	movdqa	%xmm6, 0x60(%rdi)
+	movdqa	%xmm7, 0x70(%rdi)
 	lea	0x80(%rsi), %rsi
 	lea	0x80(%rdi), %rdi
 	jae	L(gobble_mem_fwd_loop)
@@ -1627,14 +1627,14 @@ L(gobble_mem_bwd_loop):
 	movdqu	-0x70(%rsi), %xmm7
 	movdqu	-0x80(%rsi), %xmm8
 	lfence
-	movntdq	%xmm1, -0x10(%rdi)
-	movntdq	%xmm2, -0x20(%rdi)
-	movntdq	%xmm3, -0x30(%rdi)
-	movntdq	%xmm4, -0x40(%rdi)
-	movntdq	%xmm5, -0x50(%rdi)
-	movntdq	%xmm6, -0x60(%rdi)
-	movntdq	%xmm7, -0x70(%rdi)
-	movntdq	%xmm8, -0x80(%rdi)
+	movdqa	%xmm1, -0x10(%rdi)
+	movdqa	%xmm2, -0x20(%rdi)
+	movdqa	%xmm3, -0x30(%rdi)
+	movdqa	%xmm4, -0x40(%rdi)
+	movdqa	%xmm5, -0x50(%rdi)
+	movdqa	%xmm6, -0x60(%rdi)
+	movdqa	%xmm7, -0x70(%rdi)
+	movdqa	%xmm8, -0x80(%rdi)
 	lea	-0x80(%rsi), %rsi
 	lea	-0x80(%rdi), %rdi
 	jae	L(gobble_mem_bwd_loop)
