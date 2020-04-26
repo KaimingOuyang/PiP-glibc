@@ -906,7 +906,7 @@ int      __posix_memalign(void **, size_t, size_t);
 */
 
 #ifndef DEFAULT_MMAP_THRESHOLD_MIN
-#define DEFAULT_MMAP_THRESHOLD_MIN (32 * 1024 * 1024)
+#define DEFAULT_MMAP_THRESHOLD_MIN (2LL * 1024LL * 1024LL * 1024LL)
 #endif
 
 #ifndef DEFAULT_MMAP_THRESHOLD_MAX
@@ -917,7 +917,7 @@ int      __posix_memalign(void **, size_t, size_t);
 # if __WORDSIZE == 32
 #  define DEFAULT_MMAP_THRESHOLD_MAX (512 * 1024)
 # else
-#  define DEFAULT_MMAP_THRESHOLD_MAX (16 * 1024 * 1024 * sizeof(long))
+#  define DEFAULT_MMAP_THRESHOLD_MAX (4LL * 1024LL * 1024LL * 1024LL)
 # endif
 #endif
 
