@@ -4772,7 +4772,7 @@ int __libc_mallopt(int param_number, int value)
   int res = 1;
 	
   if(__malloc_initialized < 0){
-    //ptmalloc_init ();
+    ptmalloc_init ();
 	__malloc_initialized = 1;
   }
   //arena_lookup(av);

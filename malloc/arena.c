@@ -389,7 +389,8 @@ ptmalloc_init (void)
 #endif
 
   tsd_key_create(&arena_key, NULL);
-  tsd_setspecific(arena_key, (void *)&main_arena);
+  /* don't set main_arena here */
+  tsd_setspecific(arena_key, NULL);
   thread_atfork(ptmalloc_lock_all, ptmalloc_unlock_all, ptmalloc_unlock_all2);
   const char *s = NULL;
   if (__builtin_expect (_environ != NULL, 1))
