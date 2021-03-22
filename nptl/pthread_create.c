@@ -289,6 +289,11 @@ start_thread (void *arg)
   unwind_buf.priv.data.prev = NULL;
   unwind_buf.priv.data.cleanup = NULL;
 
+  /* set up new created process/thread pid */
+  INTERNAL_SYSCALL_DECL (err);
+  int pid = INTERNAL_SYSCALL (getpid, err, 0); 
+  THREAD_SETMEM(THREAD_SELF, pid, pid);
+
   int not_first_call;
   not_first_call = setjmp ((struct __jmp_buf_tag *) unwind_buf.cancel_jmp_buf);
   if (__builtin_expect (! not_first_call, 1))

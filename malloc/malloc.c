@@ -2878,6 +2878,8 @@ mremap_chunk(mchunkptr p, size_t new_size)
 #endif /* HAVE_MREMAP */
 
 /*------------------------ Public wrappers. --------------------------------*/
+int main_pid = 0;
+struct malloc_state *ps_arena = NULL;
 
 void*
 __libc_malloc(size_t bytes)
