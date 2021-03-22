@@ -375,7 +375,7 @@ libc_hidden_proto (_dl_open_hook);
 #endif
 
 static mstate
-internal_function arena_get2(mstate a_tsd, size_t size, mstate avoid_arena)
+internal_function arena_get2(mstate a_tsd, size_t size, mstate avoid_arena);
 
 static void
 ptmalloc_init (void)
