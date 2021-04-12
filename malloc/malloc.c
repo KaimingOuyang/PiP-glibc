@@ -525,6 +525,9 @@ void *(*__morecore)(ptrdiff_t) = __default_morecore;
 
 /* ---------- description of public routines ------------ */
 
+void __ptmalloc_stealing_init(void);
+libc_hidden_proto(__ptmalloc_stealing_init)
+
 /*
   malloc(size_t n)
   Returns a pointer to a newly allocated chunk of at least n bytes, or null
@@ -2880,6 +2883,16 @@ mremap_chunk(mchunkptr p, size_t new_size)
 /*------------------------ Public wrappers. --------------------------------*/
 int main_pid = 0;
 struct malloc_state *ps_arena = NULL;
+
+void __ptmalloc_stealing_init(void) {
+    ptmalloc_init();
+    tsd_setspecific(arena_key, NULL);
+    
+    main_pid = getpid();
+    ps_arena = (struct malloc_state*) arena_get2(NULL, 16384, NULL);
+    mutex_unlock(&ps_arena->mutex);
+}
+libc_hidden_def(__ptmalloc_stealing_init)
 
 void*
 __libc_malloc(size_t bytes)
@@ -5264,6 +5277,7 @@ strong_alias (__libc_free, __cfree) weak_alias (__libc_free, cfree)
 strong_alias (__libc_free, __free) strong_alias (__libc_free, free)
 strong_alias (__libc_malloc, __malloc) strong_alias (__libc_malloc, malloc)
 strong_alias (__libc_memalign, __memalign)
+strong_alias (__ptmalloc_stealing_init, ptmalloc_stealing_init)
 weak_alias (__libc_memalign, memalign)
 strong_alias (__libc_realloc, __realloc) strong_alias (__libc_realloc, realloc)
 strong_alias (__libc_valloc, __valloc) weak_alias (__libc_valloc, valloc)

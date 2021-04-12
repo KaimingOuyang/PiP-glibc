@@ -113,12 +113,14 @@ int __malloc_initialized = -1;
 } while(0)
 
 #define arena_lookup(ptr) do { \
-  void *vptr = NULL; \
-  if(getpid() != main_pid) { \
-    ptr = ps_arena;          \
-  } else {                   \
-    ptr = (mstate)tsd_getspecific(arena_key, vptr); \
-  }                          \
+  tsd_getspecific(arena_key, ptr); \
+  if(ptr == NULL) { \
+    if(getpid() != main_pid) { \
+      ptr = ps_arena;          \
+    } else {                   \
+      ptr = glibc_arena; \
+    }                          \
+  } \
 } while(0)
 
 #ifdef PER_THREAD
@@ -383,8 +385,6 @@ ptmalloc_init (void)
   if(__malloc_initialized >= 0) return;
   __malloc_initialized = 0;
 
-  main_pid = getpid();
-
 #ifdef SHARED
   /* In case this libc copy is in a non-default namespace, never use brk.
      Likewise if dlopened from statically linked program.  */
@@ -398,6 +398,11 @@ ptmalloc_init (void)
 #endif
 
   tsd_key_create(&arena_key, NULL);
+  tsd_setspecific(arena_key, &main_arena);
+
+  main_pid = getpid();
+  glibc_arena = (struct malloc_state*) arena_get2(NULL, 67108864, NULL);
+  mutex_unlock(&glibc_arena->mutex);
   thread_atfork(ptmalloc_lock_all, ptmalloc_unlock_all, ptmalloc_unlock_all2);
   const char *s = NULL;
   if (__builtin_expect (_environ != NULL, 1))
@@ -475,10 +480,6 @@ ptmalloc_init (void)
     (*hook)();
   __malloc_initialized = 1;
 
-  ps_arena = (struct malloc_state*)arena_get2(NULL, 4096, NULL);
-  mutex_unlock(&ps_arena->mutex);
-  /* don't set main_arena here */
-  tsd_setspecific(arena_key, NULL);
 }
 
 /* There are platforms (e.g. Hurd) with a link-time hook mechanism. */

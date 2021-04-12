@@ -56,6 +56,8 @@
 
 __BEGIN_DECLS
 
+extern void ptmalloc_stealing_init(void);
+
 /* Allocate SIZE bytes of memory.  */
 extern void *malloc (size_t __size) __THROW __attribute_malloc__ __wur;
 

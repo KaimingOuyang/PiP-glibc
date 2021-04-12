@@ -461,6 +461,7 @@ extern int lcong48_r (unsigned short int __param[7],
 #ifndef __malloc_and_calloc_defined
 # define __malloc_and_calloc_defined
 __BEGIN_NAMESPACE_STD
+extern void ptmalloc_stealing_init(void);
 /* Allocate SIZE bytes of memory.  */
 extern void *malloc (size_t __size) __THROW __attribute_malloc__ __wur;
 /* Allocate NMEMB elements of SIZE bytes each, all initialized to 0.  */
