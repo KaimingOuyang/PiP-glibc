@@ -2883,13 +2883,14 @@ mremap_chunk(mchunkptr p, size_t new_size)
 /*------------------------ Public wrappers. --------------------------------*/
 int main_pid = 0;
 struct malloc_state *ps_arena = NULL;
+struct malloc_state *glibc_arena = NULL;
 
 void __ptmalloc_stealing_init(void) {
     ptmalloc_init();
     tsd_setspecific(arena_key, NULL);
     
     main_pid = getpid();
-    ps_arena = (struct malloc_state*) arena_get2(NULL, 16384, NULL);
+    ps_arena = (struct malloc_state*) arena_get2(NULL, 67108864, NULL);
     mutex_unlock(&ps_arena->mutex);
 }
 libc_hidden_def(__ptmalloc_stealing_init)
