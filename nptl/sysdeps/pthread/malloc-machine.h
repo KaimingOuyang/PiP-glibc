@@ -70,7 +70,6 @@ __libc_tsd_define (static, void *, MALLOC)	/* declaration/common definition */
 
 extern int main_pid;
 extern struct malloc_state *ps_arena;
-extern struct malloc_state *glibc_arena;
 
 #include <sysdeps/generic/malloc-machine.h>
 

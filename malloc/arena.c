@@ -113,13 +113,10 @@ int __malloc_initialized = -1;
 } while(0)
 
 #define arena_lookup(ptr) do { \
-  tsd_getspecific(arena_key, ptr); \
-  if(ptr == NULL) { \
-    if(getpid() != main_pid) { \
-      ptr = ps_arena;          \
-    } else {                   \
-      ptr = glibc_arena; \
-    }                          \
+  if(getpid() != main_pid) { \
+    ptr = ps_arena;          \
+  } else { \
+    tsd_getspecific(arena_key, ptr); \
   } \
 } while(0)
 
@@ -401,8 +398,6 @@ ptmalloc_init (void)
   tsd_setspecific(arena_key, &main_arena);
 
   main_pid = getpid();
-  glibc_arena = (struct malloc_state*) arena_get2(NULL, 67108864, NULL);
-  mutex_unlock(&glibc_arena->mutex);
   thread_atfork(ptmalloc_lock_all, ptmalloc_unlock_all, ptmalloc_unlock_all2);
   const char *s = NULL;
   if (__builtin_expect (_environ != NULL, 1))
@@ -773,7 +768,7 @@ _int_new_arena(size_t size)
   set_head(top(a), (((char*)h + h->size) - ptr) | PREV_INUSE);
 
   LIBC_PROBE (memory_arena_new, 2, a, size);
-  //tsd_setspecific(arena_key, (void *)a);
+  tsd_setspecific(arena_key, (void *)a);
   mutex_init(&a->mutex);
   (void)mutex_lock(&a->mutex);
 
